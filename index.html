@@ -712,7 +712,33 @@
       alert('Por favor, preencha todos os campos obrigatórios marcados com *.');
       return;
     }
-    document.getElementById('modal').classList.add('open');
+
+    const btn = document.querySelector('button[type="submit"]');
+    btn.textContent = '⏳ Enviando...';
+    btn.disabled = true;
+
+    const data = new FormData(this);
+    data.append('access_key', '884223');
+    data.append('subject', 'Nova solicitação – Transição Contábil | Contagran');
+    data.append('from_name', 'Formulário Contagran');
+
+    fetch('https://api.web3forms.com/submit', { method: 'POST', body: data })
+      .then(r => r.json())
+      .then(res => {
+        btn.textContent = '📤 Enviar Formulário';
+        btn.disabled = false;
+        if (res.success) {
+          document.getElementById('modal').classList.add('open');
+          document.getElementById('form').reset();
+        } else {
+          alert('Erro ao enviar. Tente novamente.');
+        }
+      })
+      .catch(() => {
+        btn.textContent = '📤 Enviar Formulário';
+        btn.disabled = false;
+        alert('Erro de conexão. Verifique sua internet e tente novamente.');
+      });
   });
 </script>
 </body>

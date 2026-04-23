@@ -616,7 +616,33 @@
       if(!el.value.trim()){ el.style.borderColor='#ef4444'; valid=false; }
     });
     if(!valid){ alert('Preencha os campos obrigatórios (*)'); return; }
-    document.getElementById('modal').classList.add('open');
+
+    const btn = document.querySelector('button[type="submit"]');
+    btn.textContent = '⏳ Enviando...';
+    btn.disabled = true;
+
+    const data = new FormData(this);
+    data.append('access_key', '884223');
+    data.append('subject', 'Nova solicitação – Proposta Contábil | Contagran');
+    data.append('from_name', 'Formulário Contagran');
+
+    fetch('https://api.web3forms.com/submit', { method: 'POST', body: data })
+      .then(r => r.json())
+      .then(res => {
+        btn.textContent = '📨 Solicitar Proposta';
+        btn.disabled = false;
+        if(res.success){
+          document.getElementById('modal').classList.add('open');
+          document.getElementById('form').reset();
+        } else {
+          alert('Erro ao enviar. Tente novamente.');
+        }
+      })
+      .catch(() => {
+        btn.textContent = '📨 Solicitar Proposta';
+        btn.disabled = false;
+        alert('Erro de conexão. Verifique sua internet e tente novamente.');
+      });
   });
 </script>
 </body>
